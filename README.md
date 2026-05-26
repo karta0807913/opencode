@@ -1,3 +1,32 @@
+## LBS Local Implementation
+
+This repository includes the LBS local implementation for the OpenAI `openai/gpt-5.5` WebSocket transport. Enable it with:
+
+```bash
+export OPENCODE_EXPERIMENTAL_WS_TRANSPORT=true
+```
+
+### What did we add
+
+- Added the experimental `openai/gpt-5.5` WebSocket transport implementation.
+- Integrated the WebSocket branch from https://github.com/anomalyco/opencode/pull/15038.
+- Added `patch` at the repository root containing the `HEAD^..HEAD` diff for this local patch.
+- To reset back to upstream `dev` and reapply the local patch, use:
+
+  ```bash
+  git reset --hard origin/dev
+  git apply --check patch
+  git apply patch
+  ```
+
+  If your upstream remote is named `github`, use `git reset --hard github/dev` instead.
+
+### Base version
+
+- Base package version: `packages/opencode` `1.15.10`.
+- Base commit before this local patch: `ca354f8e8a9b07986e3c668277f37f4173b6c48a` (`v1.2.6-4107-gca354f8e8`).
+- Local patch commit: `17ac33f467ee578385d5633248b3fd5cc46174fa`.
+
 <p align="center">
   <a href="https://opencode.ai">
     <picture>
