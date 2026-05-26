@@ -28,6 +28,8 @@ import * as ProviderTransform from "./transform"
 import { ModelID, ProviderID } from "./schema"
 import { ModelStatus } from "./model-status"
 import { RuntimeFlags } from "@/effect/runtime-flags"
+import { Flag } from "@opencode-ai/core/flag/flag"
+import { OpenAIWebSocket } from "./transport/openai-websocket"
 
 const log = Log.create({ service: "provider" })
 
@@ -1633,6 +1635,14 @@ export const layer = Layer.effect(
               }
               opts.body = JSON.stringify(body)
             }
+          }
+
+          if (Flag.OPENCODE_EXPERIMENTAL_WS_TRANSPORT && model.providerID === "openai" && !customFetch) {
+            const response = await OpenAIWebSocket.stream({
+              request: input,
+              init: opts,
+            })
+            if (response) return response
           }
 
           const res = await fetchFn(input, {

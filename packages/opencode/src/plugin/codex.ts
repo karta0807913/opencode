@@ -5,6 +5,8 @@ import { OAUTH_DUMMY_KEY } from "../auth"
 import os from "os"
 import { setTimeout as sleep } from "node:timers/promises"
 import { createServer } from "http"
+import { Flag } from "@opencode-ai/core/flag/flag"
+import { OpenAIWebSocket } from "@/provider/transport/openai-websocket"
 
 const log = Log.create({ service: "plugin.codex" })
 
@@ -506,6 +508,17 @@ export async function CodexAuthPlugin(input: PluginInput, options: CodexAuthPlug
               parsed.pathname.includes("/v1/responses") || parsed.pathname.includes("/chat/completions")
                 ? new URL(codexApiEndpoint)
                 : parsed
+
+            if (Flag.OPENCODE_EXPERIMENTAL_WS_TRANSPORT) {
+              const response = await OpenAIWebSocket.stream({
+                request: url,
+                init: {
+                  ...init,
+                  headers,
+                },
+              })
+              if (response) return response
+            }
 
             return fetch(url, {
               ...init,
